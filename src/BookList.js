@@ -7,27 +7,32 @@ import sortBy from 'sort-by'
 class BookList extends Component {
   static PropTypes = {
     books: PropTypes.array.isRequired,
-    shelf: PropTypes.string.isRequired
+    shelf: PropTypes.string.isRequired,
+    onShelfChange: PropTypes.func.isRequired
   }
 
   state = {
-    query: ''
+    query: '',
+    newShelf: ''
   }
 
   render() {
-    const { books } = this.props
+    const { books, onShelfChange } = this.props
     const { shelf } = this.props
     const { query } = this.state
+
     let booksOnShelf
-    if (shelf) {
+    if (shelf && shelf != "searchResults") {
       booksOnShelf = books.filter((book) => book.shelf == shelf )
     } else {
       booksOnShelf = books
     }
 
+    console.log(JSON.stringify(booksOnShelf))
 
-  return(
-    <div className="bookshelf-books">
+    return(
+      <div className="bookshelf-books">
+
 
       <ol className="books-grid">
       {booksOnShelf.map ( (book) => (
@@ -36,7 +41,7 @@ class BookList extends Component {
             <div className="book-top">
               <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: "url(" + book.backgroundImage + ")" }}></div>
               <div className="book-shelf-changer">
-                <select>
+                <select onChange={(e) => onShelfChange(book.id, e)} value={shelf}>
                   <option value="none" disabled>Move to...</option>
                   <option value="currentlyReading">Currently Reading</option>
                   <option value="wantToRead">Want to Read</option>
@@ -52,10 +57,13 @@ class BookList extends Component {
         )) }
       </ol>
       </div>
-
-  )
-}
-
+    )
+   }
+ }
+BookList.propTypes = {
+  onShelfChange: PropTypes.func.isRequired,
+  books: PropTypes.array.isRequired,
+  shelf: PropTypes.string.isRequired
 }
 
 export default BookList

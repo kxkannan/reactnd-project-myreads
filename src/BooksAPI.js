@@ -9,7 +9,7 @@ if (!token)
 
 const headers = {
   'Accept': 'application/json',
-  'Authorization': token
+  'Authorization': 'Bearer ABC123456789'
 }
 
 export const get = (bookId) =>
@@ -36,7 +36,8 @@ export const search = (query, maxResults) =>
   fetch(`${api}/search`, {
     method: 'POST',
     headers: {
-      ...headers,
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ABC123456789',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ query, maxResults })
