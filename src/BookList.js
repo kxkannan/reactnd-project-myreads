@@ -28,8 +28,6 @@ class BookList extends Component {
       booksOnShelf = books
     }
 
-    console.log(JSON.stringify(booksOnShelf))
-
     return(
       <div className="bookshelf-books">
 
@@ -41,7 +39,7 @@ class BookList extends Component {
             <div className="book-top">
               <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: "url(" + book.backgroundImage + ")" }}></div>
               <div className="book-shelf-changer">
-                <select onChange={(e) => onShelfChange(book.id, e)} value={shelf}>
+                <select onChange={(e) => onShelfChange(book.id, book.shelf, e)} value={shelf}>
                   <option value="none" disabled>Move to...</option>
                   <option value="currentlyReading">Currently Reading</option>
                   <option value="wantToRead">Want to Read</option>
