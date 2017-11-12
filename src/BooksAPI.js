@@ -9,7 +9,7 @@ if (!token)
 
 const headers = {
   'Accept': 'application/json',
-  'Authorization': 'Bearer ABC123456789'
+  'Authorization': 'Bearer KKABC123456789'
 }
 
 export const get = (bookId) =>
@@ -26,7 +26,8 @@ export const update = (book, shelf) =>
   fetch(`${api}/books/${book.id}`, {
     method: 'PUT',
     headers: {
-      ...headers,
+      'Accept': 'application/json',
+      'Authorization': 'Bearer KKABC123456789',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ shelf })
@@ -37,7 +38,7 @@ export const search = (query, maxResults) =>
     method: 'POST',
     headers: {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ABC123456789',
+      'Authorization': 'Bearer KKABC123456789',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ query, maxResults })
