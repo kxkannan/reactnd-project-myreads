@@ -89,19 +89,26 @@ class BooksApp extends React.Component {
    *   Map the server search result book to the book object used in this project and also set the shelf to
    *   searchResults
    *
+   *   Filter the search results and show only the books that are already not on the shelf
+   *
    *   It is limited to showing only 25 results.
    *
    */
   queryBooks = (query) => {
     this.setState({query: query.trim()})
+    let nonShelfBooks
     if (this.state.query.length > 0) {
       BooksAPI.search(query.trim(), 25).then((searchResults) => {
-        this.setState({searchResults})
+        nonShelfBooks = searchResults.filter ( (book) =>
+                                  !this.state.books.map( (mbook) => mbook.id ).includes(book.id) )
+        this.setState({searchResults: nonShelfBooks})
 
         if (this.state.searchResults.length > 0) {
           this.setState((previousState) => ({
 
-            searchResultBooks: this.state.searchResults.map((resultBook) => (
+            searchResultBooks: this.state.searchResults.
+                                  filter( (resultBook) => (resultBook.shelf != "currentlyReading" && resultBook.shelf != "wantToRead" && resultBook.shelf != "read" ) ).
+                                  map((resultBook) => (
                     {
                       id: resultBook.id,
                       title: resultBook.title,

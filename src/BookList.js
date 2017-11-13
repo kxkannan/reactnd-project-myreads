@@ -20,7 +20,7 @@ class BookList extends Component {
     if (shelf && shelf != "searchResults") {
       booksOnShelf = books.filter((book) => book.shelf == shelf)
     } else {
-      booksOnShelf = books.filter( (book) => book.shelf = "searchResults")
+      booksOnShelf = books
     }
 
     return (
