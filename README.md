@@ -15,3 +15,4 @@ As you type into the search box, the books matching the search will appear below
 
 The main page can be refreshed any number of times and it will show the book selections on the 3 shelves.
 
+Important: The search terms are limited to the [SEARCH_TERMS.md] so not all searches will yield results.  Also, the search results are limited to 25 books for all of the search terms.
