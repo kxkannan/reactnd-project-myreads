@@ -17,7 +17,7 @@ class SearchBooks extends Component {
     const { books, query } = this.props
 
     return (
-
+      /* search input */
       <div className="search-books">
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
@@ -30,6 +30,8 @@ class SearchBooks extends Component {
           </div>
           <div>{ (query.length > 0 ) ? "Your search matched " + books.length + " books" : ""}</div>
         </div>
+
+        /* search results */
         <div className="search-books-results">
           <BookList books={this.props.books} onShelfChange={onShelfChange} shelf="searchResults"/>
           <div>

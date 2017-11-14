@@ -17,6 +17,7 @@ class BookList extends Component {
     const {shelf} = this.props
 
     let booksOnShelf
+
     if (shelf && shelf != "searchResults") {
       booksOnShelf = books.filter((book) => book.shelf == shelf)
     } else {
@@ -34,7 +35,8 @@ class BookList extends Component {
                     width: 128,
                     height: 193,
                     backgroundImage: "url(" + book.backgroundImage + ")"
-                  }}></div>
+                    }}>
+                  </div>
                   <div className="book-shelf-changer">
                     <select onChange={(e) => onShelfChange(book.id, book.shelf, e)} value={shelf}>
                       <option value="none" disabled>Move to...</option>

@@ -8,13 +8,6 @@ import SearchBooks from './SearchBooks'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
     query: '',
     newShelf: '',
     searchResults: [],
@@ -52,10 +45,11 @@ class BooksApp extends React.Component {
    *   Update the server with the selected book and shelf.
    */
   moveToList = (book_id, book_shelf, event) => {
-    // this.state.newShelf = event.target.value
-    this.setState({newShelf: event.target.value})
+
     let selectedBook
     let newBookList
+
+    this.setState( { newShelf: event.target.value } )
 
     if (book_shelf != "searchResults") {
       selectedBook = this.state.books.filter((book) => book.id == book_id)[0]
@@ -65,7 +59,7 @@ class BooksApp extends React.Component {
         selectedBook.shelf = state.newShelf
       })
     }
-    else {
+    else {  /* handle search results selection */
 
       selectedBook = this.state.searchResultBooks.filter((book) => book.id == book_id)[0]
       selectedBook.shelf = event.target.value
@@ -97,8 +91,10 @@ class BooksApp extends React.Component {
   queryBooks = (query) => {
     this.setState({query: query.trim()})
     let nonShelfBooks
+
     if (this.state.query.length > 0) {
       BooksAPI.search(query.trim(), 25).then((searchResults) => {
+
         nonShelfBooks = searchResults.filter ( (book) =>
                                   !this.state.books.map( (mbook) => mbook.id ).includes(book.id) )
         this.setState({searchResults: nonShelfBooks})
@@ -107,17 +103,16 @@ class BooksApp extends React.Component {
           this.setState((previousState) => ({
 
             searchResultBooks: this.state.searchResults.
-                                  filter( (resultBook) => (resultBook.shelf != "currentlyReading" && resultBook.shelf != "wantToRead" && resultBook.shelf != "read" ) ).
                                   map((resultBook) => (
-                    {
-                      id: resultBook.id,
-                      title: resultBook.title,
-                      author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
-                      shelf: "searchResults",
-                      backgroundImage: resultBook.imageLinks.thumbnail
-                    }
-                )
-            )
+                                    {
+                                      id: resultBook.id,
+                                      title: resultBook.title,
+                                      author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
+                                      shelf: "searchResults",
+                                      backgroundImage: resultBook.imageLinks.thumbnail
+                                    }
+                                   )
+                                  )
           }))
         }
       })
