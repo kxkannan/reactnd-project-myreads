@@ -78,6 +78,16 @@ class BooksApp extends React.Component {
   }
 
   /*
+   * determine the shelf based on the bookId. If it's not on any shelf return
+   * "searchResults" as the shelf name
+   */
+  getShelf = bookId => {
+    var result = this.state.books.filter( (book) => (book.id == bookId))[0]
+    var shelfName = result ? result.shelf : "searchResults"
+    return shelfName
+  }
+
+  /*
    *   Query the server for the books based on the query term - title or author.
    *
    *   Map the server search result book to the book object used in this project and also set the shelf to
@@ -90,14 +100,10 @@ class BooksApp extends React.Component {
    */
   queryBooks = (query) => {
     this.setState({query: query.trim()})
-    let nonShelfBooks
 
     if (this.state.query.length > 0) {
       BooksAPI.search(query.trim(), 25).then((searchResults) => {
-
-        nonShelfBooks = searchResults.filter ( (book) =>
-                                  !this.state.books.map( (mbook) => mbook.id ).includes(book.id) )
-        this.setState({searchResults: nonShelfBooks})
+        this.setState({searchResults})
 
         if (this.state.searchResults.length > 0) {
           this.setState((previousState) => ({
@@ -108,7 +114,7 @@ class BooksApp extends React.Component {
                                       id: resultBook.id,
                                       title: resultBook.title,
                                       author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
-                                      shelf: "searchResults",
+                                      shelf:  this.getShelf(resultBook.id),
                                       backgroundImage: resultBook.imageLinks.thumbnail
                                     }
                                    )
