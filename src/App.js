@@ -9,7 +9,6 @@ import SearchBooks from './SearchBooks'
 class BooksApp extends React.Component {
   state = {
     query: '',
-    newShelf: '',
     searchResults: [],
     searchResultBooks: [],
     books: []
@@ -21,18 +20,7 @@ class BooksApp extends React.Component {
    */
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({
-        books: books.map((resultBook) => (
-                {
-                  id: resultBook.id,
-                  title: resultBook.title,
-                  author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
-                  shelf: resultBook.shelf,
-                  backgroundImage: resultBook.imageLinks.thumbnail
-                }
-            )
-        )
-      })
+      this.setState({ books })
     })
   }
 
@@ -48,15 +36,16 @@ class BooksApp extends React.Component {
 
     let selectedBook
     let newBookList
+    let movedToShelf
 
-    this.setState( { newShelf: event.target.value } )
+    movedToShelf = event.target.value
 
     if (book_shelf != "searchResults") {
       selectedBook = this.state.books.filter((book) => book.id == book_id)[0]
 
       this.setState((state, props) => {
         selectedBook = this.state.books.filter((book) => book.id == book_id)[0]
-        selectedBook.shelf = state.newShelf
+        selectedBook.shelf = movedToShelf
       })
     }
     else {  /* handle search results selection */
@@ -115,7 +104,7 @@ class BooksApp extends React.Component {
                                       title: resultBook.title,
                                       author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
                                       shelf:  this.getShelf(resultBook.id),
-                                      backgroundImage: resultBook.imageLinks.thumbnail
+                                      imageLinks: resultBook.imageLinks
                                     }
                                    )
                                   )
@@ -131,6 +120,12 @@ class BooksApp extends React.Component {
    *
    */
   render() {
+
+    const wantToRead       = this.state.books.filter(book => book.shelf === 'wantToRead')
+    const currentlyReading = this.state.books.filter(book => book.shelf === 'currentlyReading')
+    const read             = this.state.books.filter(book => book.shelf === 'read')
+
+
     return (
         <div className="app">
 
@@ -144,18 +139,15 @@ class BooksApp extends React.Component {
                       <div>
                         <div className="bookshelf">
                           <h2 className="bookshelf-title">Currently Reading</h2>
-                          <BookList books={this.state.books} onShelfChange={this.moveToList}
-                                    shelf="currentlyReading"/>
+                          <BookList books={currentlyReading} onShelfChange={this.moveToList} shelf="currentlyReading"/>
                         </div>
                         <div className="bookshelf">
                           <h2 className="bookshelf-title">Want to Read</h2>
-                          <BookList books={this.state.books} onShelfChange={this.moveToList}
-                                    shelf="wantToRead"/>
+                          <BookList books={wantToRead} onShelfChange={this.moveToList} shelf="wantToRead"/>
                         </div>
                         <div className="bookshelf">
                           <h2 className="bookshelf-title">Read</h2>
-                          <BookList books={this.state.books} onShelfChange={this.moveToList}
-                                    shelf="read"/>
+                          <BookList books={read} onShelfChange={this.moveToList} shelf="read"/>
                         </div>
                       </div>
                     </div>
