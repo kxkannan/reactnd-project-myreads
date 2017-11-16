@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import BookList from './BookList'
 
 class SearchBooks extends Component {
-  static PropTypes = {
+  static propTypes = {
     query: PropTypes.string.isRequired,
     onQueryChange: PropTypes.func.isRequired,
     onShelfChange: PropTypes.func.isRequired,
@@ -24,7 +24,7 @@ class SearchBooks extends Component {
           <div className="search-books-input-wrapper">
             <input type="text"
                    placeholder="Search by title or author"
-                   value={this.props.query}
+                   value={query}
                    onChange={(event) => onQueryChange(event.target.value)}
             />
           </div>
@@ -33,7 +33,7 @@ class SearchBooks extends Component {
 
         /* search results */
         <div className="search-books-results">
-          <BookList books={this.props.books} onShelfChange={onShelfChange} shelf="searchResults"/>
+          <BookList books={books} onShelfChange={onShelfChange} shelf="none"/>
           <div>
             <Link to="/">Return to Book Shelf</Link>
           </div>

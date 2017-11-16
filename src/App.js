@@ -2,9 +2,11 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import {Route} from 'react-router-dom'
 import {Link} from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 import './App.css'
 import BookList from './BookList'
 import SearchBooks from './SearchBooks'
+import NoMatch from './NoMatch'
 
 class BooksApp extends React.Component {
   state = {
@@ -39,24 +41,25 @@ class BooksApp extends React.Component {
     let movedToShelf
 
     movedToShelf = event.target.value
+    console.log(" movedToShelf " + movedToShelf + " from book_shelf " + book_shelf)
 
-    if (book_shelf != "searchResults") {
-      selectedBook = this.state.books.filter((book) => book.id == book_id)[0]
+    if (book_shelf !== "none") {
+      selectedBook = this.state.books.filter((book) => book.id === book_id)[0]
 
       this.setState((state, props) => {
-        selectedBook = this.state.books.filter((book) => book.id == book_id)[0]
+        selectedBook = this.state.books.filter((book) => book.id === book_id)[0]
         selectedBook.shelf = movedToShelf
       })
     }
     else {  /* handle search results selection */
 
-      selectedBook = this.state.searchResultBooks.filter((book) => book.id == book_id)[0]
+      selectedBook = this.state.searchResultBooks.filter((book) => book.id === book_id)[0]
       selectedBook.shelf = event.target.value
       newBookList = this.state.books.slice()
       newBookList.push(selectedBook)
 
       let updatedSearchList
-      updatedSearchList = this.state.searchResultBooks.filter((book) => book.id != selectedBook.id)
+      updatedSearchList = this.state.searchResultBooks.filter((book) => book.id !== selectedBook.id)
 
       this.setState((state, props) => ({books: newBookList}))
       this.setState((state, props) => ({searchResultBooks: updatedSearchList}))
@@ -71,8 +74,15 @@ class BooksApp extends React.Component {
    * "searchResults" as the shelf name
    */
   getShelf = bookId => {
-    var result = this.state.books.filter( (book) => (book.id == bookId))[0]
-    var shelfName = result ? result.shelf : "searchResults"
+    var book = this.state.books.filter( (book) => (book.id === bookId))[0]
+    let shelfName
+    if (book) {
+      shelfName = book ? book.shelf : "none"
+    }
+    else {
+      shelfName = "none"
+    }
+    console.log("bookId: " + bookId + " shelfName " + shelfName)
     return shelfName
   }
 
@@ -88,30 +98,33 @@ class BooksApp extends React.Component {
    *
    */
   queryBooks = (query) => {
-    this.setState({query: query.trim()})
+    this.setState({query: query})
 
-    if (this.state.query.length > 0) {
+    if (query.length > 0) {
       BooksAPI.search(query.trim(), 25).then((searchResults) => {
         this.setState({searchResults})
 
-        if (this.state.searchResults.length > 0) {
+        if (this.state.searchResults && this.state.searchResults.length > 0) {
           this.setState((previousState) => ({
 
-            searchResultBooks: this.state.searchResults.
-                                  map((resultBook) => (
-                                    {
+            searchResultBooks: this.state.searchResults
+                                  .map((resultBook) => (
+                                     {
                                       id: resultBook.id,
                                       title: resultBook.title,
                                       author: (resultBook.authors && resultBook.authors.length > 0) ? resultBook.authors.join(", ") : "",
                                       shelf:  this.getShelf(resultBook.id),
                                       imageLinks: resultBook.imageLinks
                                     }
-                                   )
+                                  )
                                   )
           }))
         }
       })
+    } else {
+      this.setState({searchResultBooks: []})
     }
+
   }
 
 
@@ -129,7 +142,8 @@ class BooksApp extends React.Component {
     return (
         <div className="app">
 
-          <Route exact path="/" render={() => (
+          <Switch>
+            <Route exact path="/" render={() => (
               (
                   <div className="list-books">
                     <div className="list-books-title">
@@ -156,12 +170,16 @@ class BooksApp extends React.Component {
                     </div>
                   </div>
               )
-          )}/>
+            )}/>
 
-          <Route path="/search" render={() => (
+            <Route path="/search" render={() => (
               <SearchBooks onQueryChange={this.queryBooks} query={this.state.query} onShelfChange={this.moveToList}
                            books={this.state.searchResultBooks}/>
-          )}/>
+            )}/>
+
+            <Route component={NoMatch}/>
+
+          </Switch>
         </div>
 
     )

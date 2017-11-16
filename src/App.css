@@ -172,3 +172,8 @@ body, .app {
   text-align: center;
   font-size: 0.8em;
 }
+
+/* No match */
+h2.no-match {
+  text-align: center;
+}
