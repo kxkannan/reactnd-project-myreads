@@ -12,7 +12,6 @@ class BooksApp extends React.Component {
   state = {
     query: '',
     searchResults: [],
-    searchResultBooks: [],
     books: []
   }
 
@@ -53,16 +52,16 @@ class BooksApp extends React.Component {
     }
     else {  /* handle search results selection */
 
-      selectedBook = this.state.searchResultBooks.filter((book) => book.id === book_id)[0]
+      selectedBook = this.state.searchResults.filter((book) => book.id === book_id)[0]
       selectedBook.shelf = event.target.value
       newBookList = this.state.books.slice()
       newBookList.push(selectedBook)
 
       let updatedSearchList
-      updatedSearchList = this.state.searchResultBooks.filter((book) => book.id !== selectedBook.id)
+      updatedSearchList = this.state.searchResults.filter((book) => book.id !== selectedBook.id)
 
       this.setState((state, props) => ({books: newBookList}))
-      this.setState((state, props) => ({searchResultBooks: updatedSearchList}))
+      this.setState((state, props) => ({searchResults: updatedSearchList}))
 
     }
 
@@ -102,12 +101,11 @@ class BooksApp extends React.Component {
 
     if (query.length > 0) {
       BooksAPI.search(query.trim(), 25).then((searchResults) => {
-        this.setState({searchResults})
 
-        if (this.state.searchResults && this.state.searchResults.length > 0) {
+        if (searchResults && searchResults.length > 0) {
           this.setState((previousState) => ({
 
-            searchResultBooks: this.state.searchResults
+            searchResults: searchResults
                                   .map((resultBook) => (
                                      {
                                       id: resultBook.id,
@@ -122,7 +120,7 @@ class BooksApp extends React.Component {
         }
       })
     } else {
-      this.setState({searchResultBooks: []})
+      this.setState({searchResults: []})
     }
 
   }
@@ -152,15 +150,15 @@ class BooksApp extends React.Component {
                     <div className="list-books-content">
                       <div>
                         <div className="bookshelf">
-                          <h2 className="bookshelf-title">Currently Reading</h2>
+                          <h2 className="bookshelf-title">Currently Reading ({currentlyReading.length})</h2>
                           <BookList books={currentlyReading} onShelfChange={this.moveToList} shelf="currentlyReading"/>
                         </div>
                         <div className="bookshelf">
-                          <h2 className="bookshelf-title">Want to Read</h2>
+                          <h2 className="bookshelf-title">Want to Read ({wantToRead.length})</h2>
                           <BookList books={wantToRead} onShelfChange={this.moveToList} shelf="wantToRead"/>
                         </div>
                         <div className="bookshelf">
-                          <h2 className="bookshelf-title">Read</h2>
+                          <h2 className="bookshelf-title">Read ({read.length})</h2>
                           <BookList books={read} onShelfChange={this.moveToList} shelf="read"/>
                         </div>
                       </div>
@@ -174,7 +172,7 @@ class BooksApp extends React.Component {
 
             <Route path="/search" render={() => (
               <SearchBooks onQueryChange={this.queryBooks} query={this.state.query} onShelfChange={this.moveToList}
-                           books={this.state.searchResultBooks}/>
+                           books={this.state.searchResults}/>
             )}/>
 
             <Route component={NoMatch}/>

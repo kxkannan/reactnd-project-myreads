@@ -16,7 +16,6 @@ class BookList extends Component {
 
     let booksOnShelf
 
-
     if (shelf && shelf !== "none") {
       booksOnShelf = books.filter((book) => book.shelf === shelf)
     } else {
@@ -27,7 +26,6 @@ class BookList extends Component {
       <div className="bookshelf-books">
         <ol className="books-grid">
           {booksOnShelf.map((book) => (
-            console.log(" book: " + book.title + " shelf " + book.shelf ) ||
             <li key={book.id}>
               <Book book={book} onShelfChange={onShelfChange} />
             </li>
