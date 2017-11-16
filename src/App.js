@@ -40,7 +40,6 @@ class BooksApp extends React.Component {
     let movedToShelf
 
     movedToShelf = event.target.value
-    console.log(" movedToShelf " + movedToShelf + " from book_shelf " + book_shelf)
 
     if (book_shelf !== "none") {
       selectedBook = this.state.books.filter((book) => book.id === book_id)[0]
@@ -81,7 +80,6 @@ class BooksApp extends React.Component {
     else {
       shelfName = "none"
     }
-    console.log("bookId: " + bookId + " shelfName " + shelfName)
     return shelfName
   }
 
