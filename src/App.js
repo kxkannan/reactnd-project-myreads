@@ -4,7 +4,7 @@ import {Route} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 import { Switch } from 'react-router-dom'
 import './App.css'
-import BookList from './BookList'
+import BookShelf from './BookShelf'
 import SearchBooks from './SearchBooks'
 import NoMatch from './NoMatch'
 
@@ -145,22 +145,15 @@ class BooksApp extends React.Component {
                     <div className="list-books-title">
                       <h1>MyReads</h1>
                     </div>
+
                     <div className="list-books-content">
                       <div>
-                        <div className="bookshelf">
-                          <h2 className="bookshelf-title">Currently Reading ({currentlyReading.length})</h2>
-                          <BookList books={currentlyReading} onShelfChange={this.moveToList} shelf="currentlyReading"/>
-                        </div>
-                        <div className="bookshelf">
-                          <h2 className="bookshelf-title">Want to Read ({wantToRead.length})</h2>
-                          <BookList books={wantToRead} onShelfChange={this.moveToList} shelf="wantToRead"/>
-                        </div>
-                        <div className="bookshelf">
-                          <h2 className="bookshelf-title">Read ({read.length})</h2>
-                          <BookList books={read} onShelfChange={this.moveToList} shelf="read"/>
-                        </div>
+                        <BookShelf title="Currently Reading" books={currentlyReading} onShelfChange={this.moveToList} shelf="currentlyReading"/>
+                        <BookShelf title="Want To Read" books={wantToRead} onShelfChange={this.moveToList} shelf="wantToRead"/>
+                        <BookShelf title="Read" books={read} onShelfChange={this.moveToList} shelf="read"/>
                       </div>
                     </div>
+
                     <div className="open-search">
                       <Link to="/search">Add a book</Link>
                     </div>
